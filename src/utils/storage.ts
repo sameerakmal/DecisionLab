@@ -15,3 +15,13 @@ export function saveDecision(decision: Decision): Decision[] {
 
   return decisions;
 }
+
+export function getDecisions() : Decision[]{
+    const storedDecisions = localStorage.getItem(STORAGE_KEY);
+
+    if(!storedDecisions){
+        return [];
+    }
+
+    return JSON.parse(storedDecisions);
+}

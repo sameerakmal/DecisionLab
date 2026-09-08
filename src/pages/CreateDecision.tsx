@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { Decision } from "../types/decision";
 import { saveDecision } from "../utils/storage";
 import { useNavigate } from "react-router-dom";
+
 const CreateDecision = () => {
   const [title, setTitle] = useState("");
   const [context, setContext] = useState("");
