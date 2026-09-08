@@ -1,11 +1,14 @@
 import { useState } from "react";
 import type { Decision } from "../types/decision";
 import { saveDecision } from "../utils/storage";
+import { useNavigate } from "react-router-dom";
 const CreateDecision = () => {
   const [title, setTitle] = useState("");
   const [context, setContext] = useState("");
   const [category, setCategory] = useState("");
   const [budget, setBudget] = useState("");
+
+  const navigate = useNavigate();
 
   const handleSubmit = (event: React.SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -25,7 +28,7 @@ const CreateDecision = () => {
     };
     const savedDecision = saveDecision(newDecision);
 
-    console.log(savedDecision);
+    navigate("/decisions");
   };
 
   return (
