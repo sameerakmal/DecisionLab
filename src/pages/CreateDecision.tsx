@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { Decision } from "../types/decision";
+import { saveDecision } from "../utils/storage";
 const CreateDecision = () => {
   const [title, setTitle] = useState("");
   const [context, setContext] = useState("");
@@ -7,24 +8,24 @@ const CreateDecision = () => {
   const [budget, setBudget] = useState("");
 
   const handleSubmit = (event: React.SyntheticEvent<HTMLFormElement>) => {
-
     event.preventDefault();
 
     const now = new Date().toISOString();
 
-    const newDecision : Decision = {
-      id : crypto.randomUUID(),
+    const newDecision: Decision = {
+      id: crypto.randomUUID(),
       title,
       context,
       category,
-      budget : Number(budget),
+      budget: Number(budget),
       status: "Researching",
-      createdAt : now,
-      updatedAt : now,
-      options : []
+      createdAt: now,
+      updatedAt: now,
+      options: [],
     };
+    const savedDecision = saveDecision(newDecision);
 
-    console.log(newDecision);
+    console.log(savedDecision);
   };
 
   return (
@@ -38,9 +39,10 @@ const CreateDecision = () => {
           Create New Decision
         </h2>
 
-        <form 
+        <form
           onSubmit={handleSubmit}
-          className="space-y-6 rounded-xl border border-gray-200 bg-white p-8 shadow-sm">
+          className="space-y-6 rounded-xl border border-gray-200 bg-white p-8 shadow-sm"
+        >
           <div>
             <label
               htmlFor="title"
