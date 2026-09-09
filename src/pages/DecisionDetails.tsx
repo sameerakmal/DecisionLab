@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { getDecisions } from "../utils/storage";
-import type { Decision, Option } from "../types/decision";
+import type { Decision } from "../types/decision";
 
 function DecisionDetails() {
   const { id } = useParams();
