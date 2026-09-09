@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import type { Decision } from "../types/decision";
 import { getDecisions } from "../utils/storage";
+import DecisionCard from "../components/DecisionCard";
 function Dashboard() {
   const [decisions, setDecisions] = useState<Decision[]>([]);
 
@@ -8,7 +9,6 @@ function Dashboard() {
     const savedDecisions = getDecisions();
 
     setDecisions(savedDecisions);
-
   }, []);
   return (
     <div className="min-h-screen bg-gray-100">
@@ -37,33 +37,9 @@ function Dashboard() {
           </div>
         ) : (
           <section className="flex flex-col gap-4">
-           {decisions.map((decision) => (
-              <div key={decision.id} className="flex items-center justify-between rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-                <div>
-                  <h3 className="mb-2 text-xl font-semibold text-gray-900">
-                    {decision.title}
-                  </h3>
-
-                  <p className="mb-4 text-sm text-gray-500">{decision.category}</p>
-
-                  <div className="flex gap-5 text-sm text-gray-500">
-                    <span>{decision.options.length} options</span>
-                    <span>{decision.status}</span>
-                    <span>Last modified: {new Date(decision.updatedAt).toLocaleDateString()}</span>
-                  </div>
-                </div>
-
-                <div className="flex gap-3">
-                  <button className="rounded-lg border border-blue-600 px-4 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50">
-                    Open
-                  </button>
-
-                  <button className="rounded-lg border border-red-600 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50">
-                    Delete
-                  </button>
-                </div>
-              </div>
-           ))}
+            {decisions.map((decision) => (
+              <DecisionCard key={decision.id} decision={decision} />
+            ))}
           </section>
         )}
       </main>
