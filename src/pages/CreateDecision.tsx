@@ -27,7 +27,8 @@ const CreateDecision = () => {
       updatedAt: now,
       options: [],
     };
-    const savedDecision = saveDecision(newDecision);
+    
+    saveDecision(newDecision);
 
     navigate("/decisions");
   };
