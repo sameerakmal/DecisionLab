@@ -16,12 +16,28 @@ export function saveDecision(decision: Decision): Decision[] {
   return decisions;
 }
 
-export function getDecisions() : Decision[]{
-    const storedDecisions = localStorage.getItem(STORAGE_KEY);
+export function getDecisions(): Decision[] {
+  const storedDecisions = localStorage.getItem(STORAGE_KEY);
 
-    if(!storedDecisions){
-        return [];
-    }
+  if (!storedDecisions) {
+    return [];
+  }
 
-    return JSON.parse(storedDecisions);
+  return JSON.parse(storedDecisions);
+}
+
+export function updateDecision(updatedDecision: Decision): Decision[] {
+  const storedDecisions = localStorage.getItem(STORAGE_KEY);
+
+  const decisions: Decision[] = storedDecisions
+    ? JSON.parse(storedDecisions)
+    : [];
+
+  const updatedDecisions = decisions.map((decision) =>
+    decision.id === updatedDecision.id ? updatedDecision : decision,
+  );
+
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedDecisions));
+
+  return updatedDecisions;
 }

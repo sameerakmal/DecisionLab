@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { getDecisions } from "../utils/storage";
+import { getDecisions, updateDecision } from "../utils/storage";
 import type { Decision } from "../types/decision";
+import OptionForm from "../components/OptionForm";
+import type { Option } from "../types/decision";
 
 function DecisionDetails() {
   const { id } = useParams();
   const [decision, setDecision] = useState<Decision | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [options, setOptions] = useState<Option[]>([]);
 
   useEffect(() => {
     const decisions = getDecisions();
@@ -16,8 +19,28 @@ function DecisionDetails() {
     });
 
     setDecision(selectedDecision ?? null);
+
+    if (selectedDecision) {
+      setOptions(selectedDecision.options);
+    }
+
     setIsLoading(false);
   }, [id]);
+
+  const handleAddOption = (option: Option) => {
+    const updatedOptions = [...options, option];
+
+    const updatedDecision : Decision = {
+      ...decision!,
+      options : updatedOptions,
+      updatedAt : new Date().toISOString()
+    }
+
+    updateDecision(updatedDecision);
+
+    setDecision(updatedDecision);
+    setOptions(updatedOptions);
+  };
 
   if (isLoading) {
     return (
@@ -83,11 +106,11 @@ function DecisionDetails() {
               Options
             </h4>
 
-            {decision.options.length === 0 ? (
+            {options.length === 0 ? (
               <p className="text-gray-600">No options added yet.</p>
             ) : (
               <div className="space-y-4">
-                {decision.options.map((option) => (
+                {options.map((option) => (
                   <div
                     key={option.id}
                     className="rounded-lg border border-gray-200 p-5"
@@ -111,10 +134,21 @@ function DecisionDetails() {
                     >
                       View reference
                     </a>
+
+                    <p className="mt-2 text-sm text-gray-500">
+                      {option.evaluationPoints.length} evaluation points
+                    </p>
                   </div>
                 ))}
               </div>
             )}
+            <div className="mt-10">
+              <h4 className="mb-6 text-xl font-semibold text-gray-900">
+                Add Option
+              </h4>
+
+              <OptionForm onAdd={handleAddOption} />
+            </div>
           </div>
         </div>
       </main>
