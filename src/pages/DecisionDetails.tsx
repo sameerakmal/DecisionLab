@@ -5,6 +5,7 @@ import type { Decision, Option, Conclusion } from "../types/decision";
 import OptionForm from "../components/OptionForm";
 import ConclusionForm from "../components/ConclusionForm";
 import EvaluationBoard from "../components/EvaluationBoard";
+import ComparisonView from "../components/ComparisonView";
 
 function DecisionDetails() {
   const { id } = useParams();
@@ -12,6 +13,7 @@ function DecisionDetails() {
   const [isLoading, setIsLoading] = useState(true);
   const [options, setOptions] = useState<Option[]>([]);
   const [conclusion, setConclusion] = useState<Conclusion | null>(null);
+  const [showComparison, setShowComparison] = useState(false);
 
   useEffect(() => {
     const decisions = getDecisions();
@@ -28,7 +30,7 @@ function DecisionDetails() {
 
     setIsLoading(false);
   }, [id]);
-  
+
   const handleEvaluationPointsChange = (
     optionId: string,
     updatedEvaluationPoints: Option["evaluationPoints"],
@@ -143,9 +145,25 @@ function DecisionDetails() {
           </div>
 
           <div className="mt-10 border-t border-gray-200 pt-8">
-            <h4 className="mb-4 text-xl font-semibold text-gray-900">
-              Options
-            </h4>
+            <div className="mb-4 flex items-center justify-between">
+              <h4 className="text-xl font-semibold text-gray-900">Options</h4>
+
+              {options.length >= 2 && (
+                <button
+                  type="button"
+                  onClick={() => setShowComparison((current) => !current)}
+                  className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+                >
+                  {showComparison ? "Hide Comparison" : "Compare Options"}
+                </button>
+              )}
+            </div>
+
+            {options.length < 2 && (
+              <p className="mb-6 text-sm text-gray-500">
+                Add at least two options to compare them.
+              </p>
+            )}
 
             {options.length === 0 ? (
               <p className="text-gray-600">No options added yet.</p>
@@ -188,6 +206,9 @@ function DecisionDetails() {
                   </div>
                 ))}
               </div>
+            )}
+            {showComparison && options.length >= 2 && (
+              <ComparisonView options={options} />
             )}
             <div className="mt-10">
               <h4 className="mb-6 text-xl font-semibold text-gray-900">
