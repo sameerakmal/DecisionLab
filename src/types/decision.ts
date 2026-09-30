@@ -51,4 +51,4 @@ export interface Decision {
   updatedAt: string;
   options: Option[];
   conclusion?: Conclusion;
-}   
+}

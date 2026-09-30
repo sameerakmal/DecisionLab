@@ -4,6 +4,7 @@ import { getDecisions, updateDecision } from "../utils/storage";
 import type { Decision, Option, Conclusion } from "../types/decision";
 import OptionForm from "../components/OptionForm";
 import ConclusionForm from "../components/ConclusionForm";
+import EvaluationBoard from "../components/EvaluationBoard";
 
 function DecisionDetails() {
   const { id } = useParams();
@@ -27,6 +28,31 @@ function DecisionDetails() {
 
     setIsLoading(false);
   }, [id]);
+  
+  const handleEvaluationPointsChange = (
+    optionId: string,
+    updatedEvaluationPoints: Option["evaluationPoints"],
+  ) => {
+    const updatedOptions = options.map((option) =>
+      option.id === optionId
+        ? {
+            ...option,
+            evaluationPoints: updatedEvaluationPoints,
+          }
+        : option,
+    );
+
+    const updatedDecision: Decision = {
+      ...decision!,
+      options: updatedOptions,
+      updatedAt: new Date().toISOString(),
+    };
+
+    updateDecision(updatedDecision);
+
+    setDecision(updatedDecision);
+    setOptions(updatedOptions);
+  };
 
   const handleAddOption = (option: Option) => {
     const updatedOptions = [...options, option];
@@ -47,6 +73,7 @@ function DecisionDetails() {
     const updatedDecision: Decision = {
       ...decision!,
       conclusion: newConclusion,
+      status: "Decided",
       updatedAt: new Date().toISOString(),
     };
 
@@ -149,42 +176,15 @@ function DecisionDetails() {
                       View reference
                     </a>
 
-                    <div className="mt-6 border-t border-gray-200 pt-5">
-                      <h6 className="mb-4 text-base font-semibold text-gray-900">
-                        Evaluation Points
-                      </h6>
-
-                      {option.evaluationPoints.length === 0 ? (
-                        <p className="text-sm text-gray-500">
-                          No evaluation points added yet.
-                        </p>
-                      ) : (
-                        <div className="space-y-4">
-                          {option.evaluationPoints.map((point) => (
-                            <div
-                              key={point.id}
-                              className="rounded-lg bg-gray-50 p-4"
-                            >
-                              <p className="font-medium text-gray-900">
-                                {point.text}
-                              </p>
-
-                              <p className="mt-2 text-sm text-gray-600">
-                                Classification: {point.classification}
-                              </p>
-
-                              <p className="text-sm text-gray-600">
-                                Importance: {point.importance}
-                              </p>
-
-                              <p className="text-sm text-gray-600">
-                                Confidence: {point.confidence}
-                              </p>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
+                    <EvaluationBoard
+                      evaluationPoints={option.evaluationPoints}
+                      onChange={(updatedEvaluationPoints) =>
+                        handleEvaluationPointsChange(
+                          option.id,
+                          updatedEvaluationPoints,
+                        )
+                      }
+                    />
                   </div>
                 ))}
               </div>
